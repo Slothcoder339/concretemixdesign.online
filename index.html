@@ -3,74 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lightweight Concrete Mix Designer</title>
+  <title>Advanced Lightweight Concrete Mix Designer</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen p-4 md:p-8">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen p-3 md:p-6">
   <div class="max-w-7xl mx-auto space-y-6">
     
     <!-- Header -->
-    <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
+    <header class="border-b border-slate-700 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-sky-400">Lightweight Concrete Mix Designer</h1>
-        <p class="text-sm text-slate-400">Multi-Material Density & Compressive Strength Engine</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-sky-400">Concrete Mix Designer & Engine</h1>
+        <p class="text-xs md:text-sm text-slate-400">Multi-Phase Density, Admixture Dosage & Compressive Strength Simulator</p>
       </div>
-      <button onclick="calculate()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-5 py-2 rounded-lg transition">Recalculate</button>
+      <div class="flex items-center gap-3">
+        <button onclick="resetDefaults()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs px-3 py-2 rounded-lg transition">Reset Defaults</button>
+        <button onclick="calculate()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs md:text-sm px-5 py-2 rounded-lg transition">Recalculate</button>
+      </div>
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- Left Column: Controls & Mix Proportions -->
+      <!-- Left 2 Columns: Controls & Mix Proportions -->
       <div class="lg:col-span-2 space-y-6">
         
         <!-- Global Mix Parameters -->
-        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
-          <h2 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Global Mix Parameters</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+          <h2 class="text-sm font-semibold text-sky-300 border-b border-slate-700 pb-2">Global Batch Parameters</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div>
-              <label class="block text-slate-400 mb-1">Water / CM Ratio</label>
-              <input type="number" id="w_cm" value="0.25" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
+              <label class="block text-slate-400 mb-1">Target $w/cm$ (Batch)</label>
+              <input type="number" id="w_cm" value="0.26" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
             </div>
             <div>
-              <label class="block text-slate-400 mb-1">Measured Air %</label>
-              <input type="number" id="air_pct" value="12.0" step="0.1" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
+              <label class="block text-slate-400 mb-1">Base Entrapped Air %</label>
+              <input type="number" id="base_air_pct" value="2.5" step="0.1" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
             </div>
             <div>
               <label class="block text-slate-400 mb-1">Bound Water Factor</label>
-              <input type="number" id="bw_factor" value="0.24" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
+              <input type="number" id="bw_factor" value="0.23" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
             </div>
             <div>
-              <label class="block text-slate-400 mb-1">Strength Cal Factor</label>
-              <input type="number" id="cal_factor" value="0.511" step="0.001" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
+              <label class="block text-slate-400 mb-1">Calibration Factor ($S_{cal}$)</label>
+              <input type="number" id="cal_factor" value="0.52" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 focus:border-sky-500 outline-none" oninput="calculate()">
             </div>
           </div>
         </div>
 
         <!-- Dry Blend Ingredients Table -->
-        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
           <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-            <h2 class="text-lg font-semibold text-slate-200">Dry Blend Composition</h2>
-            <button onclick="addDryRow()" class="text-xs bg-slate-700 hover:bg-slate-600 text-sky-300 px-3 py-1 rounded transition">+ Add Material</button>
+            <h2 class="text-sm font-semibold text-sky-300">Dry Ingredients & Fillers</h2>
+            <button onclick="addDryRow()" class="text-xs bg-slate-700 hover:bg-slate-600 text-sky-300 px-2.5 py-1 rounded transition">+ Add Material</button>
           </div>
           
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead>
                 <tr class="text-slate-400 border-b border-slate-700">
-                  <th class="pb-2">Material</th>
+                  <th class="pb-2">Material / Product Name</th>
                   <th class="pb-2 w-20">Weight %</th>
-                  <th class="pb-2 w-20">SG</th>
-                  <th class="pb-2 w-24">Crush (PSI)</th>
-                  <th class="pb-2 w-10">Action</th>
+                  <th class="pb-2 w-16">SG</th>
+                  <th class="pb-2 w-20">Crush (PSI)</th>
+                  <th class="pb-2 w-8 text-center">✕</th>
                 </tr>
               </thead>
-              <tbody id="dry_table_body" class="divide-y divide-slate-700/50">
+              <tbody id="dry_table_body" class="divide-y divide-slate-700/40">
                 <!-- Dynamic rows -->
               </tbody>
             </table>
           </div>
-          <div class="flex justify-end text-sm text-slate-400 pt-2">
-            <span>Total Blend Weight: <strong id="tot_blend_wt" class="text-sky-400">100.0%</strong></span>
+          <div class="flex justify-end text-xs text-slate-400 pt-1">
+            <span>Total Dry Weight: <strong id="tot_blend_wt" class="text-sky-400">100.0%</strong></span>
+          </div>
+        </div>
+
+        <!-- Admixtures Section -->
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <div>
+              <h2 class="text-sm font-semibold text-emerald-300">Chemical Admixtures</h2>
+              <p class="text-[11px] text-slate-400">Dosed per hundredweight of Cementitious Materials (cwt = 100 lbs CM)</p>
+            </div>
+            <button onclick="addAdmixtureRow()" class="text-xs bg-slate-700 hover:bg-slate-600 text-emerald-300 px-2.5 py-1 rounded transition">+ Add Admixture</button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-700">
+                  <th class="pb-2">Admixture Name</th>
+                  <th class="pb-2 w-24">Dosage</th>
+                  <th class="pb-2 w-20">Unit</th>
+                  <th class="pb-2 w-16">SG</th>
+                  <th class="pb-2 w-16">Solids %</th>
+                  <th class="pb-2 w-8 text-center">✕</th>
+                </tr>
+              </thead>
+              <tbody id="adm_table_body" class="divide-y divide-slate-700/40">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -81,37 +113,46 @@
         
         <!-- Key Performance Indicators -->
         <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
-          <h2 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Calculated Performance</h2>
+          <h2 class="text-sm font-semibold text-slate-200 border-b border-slate-700 pb-2">Predicted Performance</h2>
           
           <div class="space-y-3">
-            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center">
-              <span class="text-xs text-slate-400">Oven-Dried Density</span>
-              <span class="text-lg font-bold text-amber-400"><span id="out_oven_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
-            </div>
-
-            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center">
-              <span class="text-xs text-slate-400">Cured Dry Density</span>
-              <span class="text-lg font-bold text-sky-400"><span id="out_cured_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
-            </div>
-
-            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center">
+            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center border border-slate-800">
               <span class="text-xs text-slate-400">Wet Plastic Density</span>
-              <span class="text-lg font-bold text-emerald-400"><span id="out_wet_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
+              <span class="text-base font-bold text-emerald-400"><span id="out_wet_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
             </div>
 
-            <div class="bg-slate-900 p-4 rounded-lg flex justify-between items-center border border-sky-500/30">
+            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center border border-slate-800">
+              <span class="text-xs text-slate-400">Cured Dry Density</span>
+              <span class="text-base font-bold text-sky-400"><span id="out_cured_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
+            </div>
+
+            <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center border border-slate-800">
+              <span class="text-xs text-slate-400">Oven-Dried Density</span>
+              <span class="text-base font-bold text-amber-400"><span id="out_oven_density">0.0</span> <span class="text-xs font-normal">lb/ft³</span></span>
+            </div>
+
+            <div class="bg-slate-900 p-4 rounded-lg flex justify-between items-center border border-sky-500/40 shadow-lg">
               <div>
-                <span class="block text-xs text-slate-400">28-Day Compressive</span>
-                <span class="text-xs text-slate-500">Scaled with $K_{agg}$ factor</span>
+                <span class="block text-xs font-medium text-slate-300">28-Day Compressive Strength</span>
+                <span class="text-[10px] text-slate-500" id="out_mpa">0.0 MPa</span>
               </div>
               <span class="text-2xl font-black text-sky-300"><span id="out_psi">0</span> <span class="text-xs font-normal">PSI</span></span>
             </div>
           </div>
         </div>
 
-        <!-- Aggregate Strength Analysis -->
-        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-3 text-xs">
-          <h3 class="font-semibold text-slate-300 border-b border-slate-700 pb-2">Engine Diagnostics</h3>
+        <!-- Diagnostic Parameters -->
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2.5 text-xs">
+          <h3 class="font-semibold text-slate-300 border-b border-slate-700 pb-2">Mix Diagnostics & Admixture Impact</h3>
+          
+          <div class="flex justify-between text-slate-400">
+            <span>Total Air Content (Base + AEA):</span>
+            <strong id="out_tot_air" class="text-emerald-300">0.0%</strong>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>Net $w/cm$ (incl. Liquid Admixtures):</span>
+            <strong id="out_net_wcm" class="text-sky-300">0.000</strong>
+          </div>
           <div class="flex justify-between text-slate-400">
             <span>Agg Strength Factor ($K_{agg}$):</span>
             <strong id="out_k_agg" class="text-slate-200">1.000</strong>
@@ -121,8 +162,12 @@
             <strong id="out_k_air" class="text-slate-200">1.000</strong>
           </div>
           <div class="flex justify-between text-slate-400">
-            <span>Density Factor ($K_{density}$):</span>
-            <strong id="out_k_density" class="text-slate-200">1.000</strong>
+            <span>Polymer Reinforcement ($K_{poly}$):</span>
+            <strong id="out_k_poly" class="text-slate-200">1.000</strong>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>Dispersion Efficiency ($K_{disp}$):</span>
+            <strong id="out_k_disp" class="text-slate-200">1.000</strong>
           </div>
         </div>
 
@@ -132,44 +177,193 @@
   </div>
 
   <script>
-    // Embedded Material Database
-    const DB = {
-      "type_il_cement": { name: "Type IL Cement (Generic)", sg: 3.15, is_cm: true, efficiency: 1.0, crush: 6000, d50: 15.0 },
-      "cts_komponent": { name: "CTS Komponent", sg: 2.87, is_cm: true, efficiency: 1.05, crush: 6500, d50: 10.0 },
-      "ggbfs_slag": { name: "GGBFS Slag", sg: 2.90, is_cm: true, efficiency: 0.85, crush: 5500, d50: 10.0 },
-      "metakaolin": { name: "Metakaolin (PowerPozz)", sg: 2.60, is_cm: true, efficiency: 1.35, crush: 8000, d50: 2.0 },
-      "silica_fume": { name: "Silica Fume", sg: 2.20, is_cm: true, efficiency: 1.40, crush: 9000, d50: 0.2 },
-      "fly_ash_f": { name: "Fly Ash Class F", sg: 2.48, is_cm: true, efficiency: 0.70, crush: 5000, d50: 12.0 },
-      "3m_k1": { name: "3M Glass Bubbles K1", sg: 0.125, is_cm: false, crush: 250, d50: 65.0 },
-      "3m_k20": { name: "3M Glass Bubbles K20", sg: 0.19, is_cm: false, crush: 300, d50: 60.0 },
-      "3m_k25": { name: "3M Glass Bubbles K25", sg: 0.25, is_cm: false, crush: 750, d50: 55.0 },
-      "3m_k37": { name: "3M Glass Bubbles K37", sg: 0.37, is_cm: false, crush: 3000, d50: 45.0 },
-      "3m_im16k": { name: "3M Glass Bubbles iM16K", sg: 0.46, is_cm: false, crush: 16000, d50: 20.0 },
-      "fgw_bubbles": { name: "FGW Glass Bubbles", sg: 0.15, is_cm: false, crush: 250, d50: 70.0 },
-      "cenospheres": { name: "Cenospheres (Standard)", sg: 0.85, is_cm: false, crush: 2000, d50: 120.0 },
-      "poraver_05_1": { name: "Poraver 0.5 - 1.0mm", sg: 0.50, is_cm: false, crush: 300, d50: 750.0 },
-      "poraver_2_4": { name: "Poraver 2.0 - 4.0mm", sg: 0.32, is_cm: false, crush: 230, d50: 3000.0 },
-      "forta_ferro": { name: "Forta-Ferro Fibers", sg: 0.91, is_cm: false, crush: 15000, d50: 15000.0 },
-      "ar_glass_fibers": { name: "AR-Glass Fibers", sg: 2.68, is_cm: false, crush: 25000, d50: 13000.0 }
+    // Category Label Definitions
+    const DRY_CATEGORIES = {
+      "cements": "Cements & SCM Binders",
+      "microspheres": "3M Glass Microspheres",
+      "poraver": "Poraver Expanded Glass",
+      "other_spheres": "Other Hollow Spheres & Fillers",
+      "aggregates": "Aggregates & Sands",
+      "fibers": "Reinforcement Fibers"
     };
 
-    // Default Mix State
+    const ADM_CATEGORIES = {
+      "air_entrainer": "Air Entrainers (AEA)",
+      "superplasticizer": "High-Range Water Reducers (PCE)",
+      "water_reducer": "Mid & Low Range Water Reducers",
+      "retarder": "Set Retarders & Stabilizers",
+      "accelerator": "Accelerators",
+      "polymer": "Polymer Modifiers (Acrylic / Latex / VAE)",
+      "vma": "Viscosity Modifiers (VMA)"
+    };
+
+    // Expanded Dry Materials Database
+    const DB = {
+      // Binders & SCMs
+      "type_i_ii_cement": { name: "Type I/II Portland Cement", category: "cements", sg: 3.15, is_cm: true, efficiency: 1.00, crush: 6000 },
+      "type_iii_cement": { name: "Type III High-Early Cement", category: "cements", sg: 3.15, is_cm: true, efficiency: 1.08, crush: 7000 },
+      "type_il_cement": { name: "Type IL Limestone Cement", category: "cements", sg: 3.12, is_cm: true, efficiency: 0.98, crush: 5800 },
+      "cts_komponent": { name: "CTS Komponent / Rapid Set", category: "cements", sg: 2.87, is_cm: true, efficiency: 1.05, crush: 6500 },
+      "csa_cement": { name: "CSA Cement (Belitic Calcium Sulfoaluminate)", category: "cements", sg: 2.98, is_cm: true, efficiency: 1.10, crush: 7200 },
+      "fondu_cac": { name: "Calcium Aluminate Cement (Fondu)", category: "cements", sg: 3.22, is_cm: true, efficiency: 1.15, crush: 8000 },
+      "ggbfs_slag": { name: "GGBFS Slag Grade 100/120", category: "cements", sg: 2.90, is_cm: true, efficiency: 0.88, crush: 5500 },
+      "metakaolin": { name: "Metakaolin (PowerPozz)", category: "cements", sg: 2.60, is_cm: true, efficiency: 1.35, crush: 8000 },
+      "silica_fume": { name: "Silica Fume (Force 10,000 / Elkem)", category: "cements", sg: 2.20, is_cm: true, efficiency: 1.45, crush: 9500 },
+      "fly_ash_f": { name: "Fly Ash (Class F)", category: "cements", sg: 2.45, is_cm: true, efficiency: 0.72, crush: 5000 },
+      "fly_ash_c": { name: "Fly Ash (Class C)", category: "cements", sg: 2.65, is_cm: true, efficiency: 0.85, crush: 5500 },
+      "pumice_pozzolan": { name: "Pumice Pozzolan (Hess VP-8)", category: "cements", sg: 2.35, is_cm: true, efficiency: 1.10, crush: 6000 },
+      "rice_husk_ash": { name: "Rice Husk Ash (Amorphous Silica)", category: "cements", sg: 2.10, is_cm: true, efficiency: 1.25, crush: 6200 },
+
+      // 3M Glass Bubbles Product Line
+      "3m_k1": { name: "3M Glass Bubbles K1", category: "microspheres", sg: 0.125, is_cm: false, crush: 250 },
+      "3m_k15": { name: "3M Glass Bubbles K15", category: "microspheres", sg: 0.15, is_cm: false, crush: 300 },
+      "3m_k20": { name: "3M Glass Bubbles K20", category: "microspheres", sg: 0.20, is_cm: false, crush: 500 },
+      "3m_k25": { name: "3M Glass Bubbles K25", category: "microspheres", sg: 0.25, is_cm: false, crush: 750 },
+      "3m_k37": { name: "3M Glass Bubbles K37", category: "microspheres", sg: 0.37, is_cm: false, crush: 3000 },
+      "3m_k46": { name: "3M Glass Bubbles K46", category: "microspheres", sg: 0.46, is_cm: false, crush: 6000 },
+      "3m_s15": { name: "3M Glass Bubbles S15", category: "microspheres", sg: 0.15, is_cm: false, crush: 300 },
+      "3m_s22": { name: "3M Glass Bubbles S22", category: "microspheres", sg: 0.22, is_cm: false, crush: 400 },
+      "3m_s32": { name: "3M Glass Bubbles S32", category: "microspheres", sg: 0.32, is_cm: false, crush: 2000 },
+      "3m_s38": { name: "3M Glass Bubbles S38", category: "microspheres", sg: 0.38, is_cm: false, crush: 4000 },
+      "3m_s60": { name: "3M Glass Bubbles S60", category: "microspheres", sg: 0.60, is_cm: false, crush: 10000 },
+      "3m_im16k": { name: "3M Glass Bubbles iM16K", category: "microspheres", sg: 0.46, is_cm: false, crush: 16000 },
+      "3m_im30k": { name: "3M Glass Bubbles iM30K", category: "microspheres", sg: 0.60, is_cm: false, crush: 28000 },
+
+      // Poraver Expanded Glass Grades
+      "poraver_01_03": { name: "Poraver 0.1 - 0.3mm", category: "poraver", sg: 0.53, is_cm: false, crush: 580 },
+      "poraver_025_05": { name: "Poraver 0.25 - 0.5mm", category: "poraver", sg: 0.50, is_cm: false, crush: 450 },
+      "poraver_05_1": { name: "Poraver 0.5 - 1.0mm", category: "poraver", sg: 0.50, is_cm: false, crush: 300 },
+      "poraver_1_2": { name: "Poraver 1.0 - 2.0mm", category: "poraver", sg: 0.35, is_cm: false, crush: 260 },
+      "poraver_2_4": { name: "Poraver 2.0 - 4.0mm", category: "poraver", sg: 0.32, is_cm: false, crush: 230 },
+
+      // Other Hollow Spheres & Lightweight Fillers
+      "fgw_bubbles": { name: "Fiberglass Warehouse Bubbles", category: "other_spheres", sg: 0.15, is_cm: false, crush: 250 },
+      "qcel_6014": { name: "Potters Q-CEL 6014", category: "other_spheres", sg: 0.14, is_cm: false, crush: 250 },
+      "sphericel_110p8": { name: "Potters Sphericel 110P8", category: "other_spheres", sg: 1.10, is_cm: false, crush: 10000 },
+      "cenospheres_std": { name: "Cenospheres (Standard)", category: "other_spheres", sg: 0.85, is_cm: false, crush: 2000 },
+      "cenospheres_white": { name: "White High-Strength Cenospheres", category: "other_spheres", sg: 0.92, is_cm: false, crush: 3500 },
+      "fillite_300": { name: "Fillite 300 Hollow Spheres", category: "other_spheres", sg: 0.70, is_cm: false, crush: 1500 },
+      "fillite_500": { name: "Fillite 500 Fine Spheres", category: "other_spheres", sg: 0.75, is_cm: false, crush: 2000 },
+      "expanded_perlite": { name: "Expanded Perlite (Coarse)", category: "other_spheres", sg: 0.15, is_cm: false, crush: 100 },
+      "vermiculite": { name: "Exfoliated Vermiculite", category: "other_spheres", sg: 0.13, is_cm: false, crush: 50 },
+      "eps_beads": { name: "EPS Micro-beads (Neopor)", category: "other_spheres", sg: 0.025, is_cm: false, crush: 15 },
+
+      // Aggregates & Fine Sands
+      "masonry_sand": { name: "Concrete Masonry Sand", category: "aggregates", sg: 2.65, is_cm: false, crush: 8000 },
+      "silica_sand_3050": { name: "Silica Sand (30/50 mesh)", category: "aggregates", sg: 2.65, is_cm: false, crush: 8500 },
+      "quartz_flour_200": { name: "Quartz Flour (200 mesh)", category: "aggregates", sg: 2.65, is_cm: false, crush: 9000 },
+      "expanded_shale": { name: "Expanded Shale / Clay Aggregate", category: "aggregates", sg: 1.45, is_cm: false, crush: 2200 },
+      "pumice_coarse": { name: "Coarse Pumice Aggregate", category: "aggregates", sg: 1.20, is_cm: false, crush: 1200 },
+
+      // Fibers
+      "poly_micro_fiber": { name: "Polypropylene Micro-Fiber 1/2\"", category: "fibers", sg: 0.91, is_cm: false, crush: 12000 },
+      "forta_ferro": { name: "Forta-Ferro Synthetic Fiber", category: "fibers", sg: 0.91, is_cm: false, crush: 15000 },
+      "ar_glass_fibers": { name: "AR-Glass Chopped Strands (12mm)", category: "fibers", sg: 2.68, is_cm: false, crush: 25000 },
+      "ar_glass_19mm": { name: "AR-Glass Chopped Strands (19mm)", category: "fibers", sg: 2.68, is_cm: false, crush: 25000 },
+      "pva_recs15": { name: "Kuraray PVA Fibers RECS15", category: "fibers", sg: 1.30, is_cm: false, crush: 20000 },
+      "pva_recs100": { name: "Kuraray PVA Fibers RECS100", category: "fibers", sg: 1.30, is_cm: false, crush: 22000 },
+      "basalt_fibers": { name: "Chopped Basalt Fibers (12mm)", category: "fibers", sg: 2.70, is_cm: false, crush: 30000 },
+      "steel_fibers_micro": { name: "Micro Steel Fibers (Dramix)", category: "fibers", sg: 7.85, is_cm: false, crush: 40000 }
+    };
+
+    // Expanded Multi-Brand Admixture Database
+    const ADM_DB = {
+      // Air Entrainers
+      "masterair_ae_90": { name: "MasterAir AE 90 (Master Builders)", category: "air_entrainer", type: "air_entrainer", sg: 1.01, solids: 12.0, default_unit: "floz_cwt", default_dose: 1.0 },
+      "sika_aer": { name: "Sika AER (Sika Air-Entrainer)", category: "air_entrainer", type: "air_entrainer", sg: 1.01, solids: 10.0, default_unit: "floz_cwt", default_dose: 0.8 },
+      "gcp_daravair_1000": { name: "Daravair 1000 (GCP Applied Tech)", category: "air_entrainer", type: "air_entrainer", sg: 1.02, solids: 14.0, default_unit: "floz_cwt", default_dose: 1.2 },
+      "euclid_air_mix": { name: "Air-Mix (Euclid Chemical)", category: "air_entrainer", type: "air_entrainer", sg: 1.01, solids: 11.0, default_unit: "floz_cwt", default_dose: 1.0 },
+
+      // High-Range Water Reducers (Superplasticizers / PCE)
+      "masterglenium_7500": { name: "MasterGlenium 7500 (MBCC PCE)", category: "superplasticizer", type: "superplasticizer", sg: 1.08, solids: 40.0, default_unit: "floz_cwt", default_dose: 6.0 },
+      "sikavisccrete_2100": { name: "SikaViscoCrete 2100 (Sika PCE)", category: "superplasticizer", type: "superplasticizer", sg: 1.08, solids: 35.0, default_unit: "floz_cwt", default_dose: 5.0 },
+      "gcp_adva_198": { name: "ADVA 198 (GCP Applied Tech PCE)", category: "superplasticizer", type: "superplasticizer", sg: 1.06, solids: 32.0, default_unit: "floz_cwt", default_dose: 5.5 },
+      "euclid_plastol_6400": { name: "Plastol 6400 (Euclid Chemical PCE)", category: "superplasticizer", type: "superplasticizer", sg: 1.07, solids: 34.0, default_unit: "floz_cwt", default_dose: 6.0 },
+      "br_water_reducer_310": { name: "Buddy Rhodes WR 310 (PCE Powder)", category: "superplasticizer", type: "superplasticizer", sg: 1.25, solids: 100.0, default_unit: "pct_cwt", default_dose: 0.25 },
+
+      // Mid & Low Range Water Reducers
+      "masterpolyheed_997": { name: "MasterPolyHeed 997 (Mid-Range)", category: "water_reducer", type: "superplasticizer", sg: 1.05, solids: 28.0, default_unit: "floz_cwt", default_dose: 5.0 },
+      "sikaplast_200": { name: "SikaPlast 200 (Mid-Range WR)", category: "water_reducer", type: "superplasticizer", sg: 1.05, solids: 25.0, default_unit: "floz_cwt", default_dose: 4.5 },
+
+      // Set Retarders & Hydration Stabilizers
+      "masterset_delvo": { name: "MasterSet DELVO (Stabilizer)", category: "retarder", type: "retarder", sg: 1.16, solids: 30.0, default_unit: "floz_cwt", default_dose: 3.0 },
+      "sika_retarder": { name: "Sika Retarder 25", category: "retarder", type: "retarder", sg: 1.15, solids: 28.0, default_unit: "floz_cwt", default_dose: 2.5 },
+      "citric_acid": { name: "Citric Acid (Retarder Powder)", category: "retarder", type: "retarder", sg: 1.66, solids: 100.0, default_unit: "pct_cwt", default_dose: 0.10 },
+
+      // Accelerators
+      "masterset_ac_534": { name: "MasterSet AC 534 (Non-Chloride)", category: "accelerator", type: "accelerator", sg: 1.30, solids: 45.0, default_unit: "floz_cwt", default_dose: 12.0 },
+      "sikaset_nc": { name: "SikaSet NC (Accelerator)", category: "accelerator", type: "accelerator", sg: 1.28, solids: 42.0, default_unit: "floz_cwt", default_dose: 10.0 },
+
+      // Polymers
+      "forton_vf_774": { name: "Forton VF-774 Polymer (Acrylic Liquid)", category: "polymer", type: "polymer", sg: 1.06, solids: 51.0, default_unit: "pct_cwt", default_dose: 6.0 },
+      "sikalatex_r": { name: "SikaLatex R (Acrylic Bonding Liquid)", category: "polymer", type: "polymer", sg: 1.04, solids: 47.0, default_unit: "pct_cwt", default_dose: 5.0 },
+      "elotex_vae_powder": { name: "Elotex VAE Redispersible Powder", category: "polymer", type: "polymer", sg: 1.15, solids: 100.0, default_unit: "pct_cwt", default_dose: 3.0 },
+
+      // Viscosity Modifiers
+      "mastermatrix_33": { name: "MasterMatrix 33 (VMA)", category: "vma", type: "generic", sg: 1.01, solids: 15.0, default_unit: "floz_cwt", default_dose: 4.0 },
+      "sika_stabilizer_4r": { name: "Sika Stabilizer 4R (VMA)", category: "vma", type: "generic", sg: 1.02, solids: 18.0, default_unit: "floz_cwt", default_dose: 3.5 }
+    };
+
+    // Initial Dry Blend State
     let dryBlendRows = [
-      { id: "type_il_cement", pct: 24.0, sg: 3.15, crush: 6000 },
+      { id: "type_il_cement", pct: 24.0, sg: 3.12, crush: 5800 },
       { id: "cts_komponent", pct: 4.5, sg: 2.87, crush: 6500 },
       { id: "ggbfs_slag", pct: 15.0, sg: 2.90, crush: 5500 },
       { id: "metakaolin", pct: 10.0, sg: 2.60, crush: 8000 },
-      { id: "silica_fume", pct: 12.5, sg: 2.20, crush: 9000 },
-      { id: "fly_ash_f", pct: 7.5, sg: 2.48, crush: 5000 },
-      { id: "3m_k20", pct: 5.0, sg: 0.89, crush: 300 },
-      { id: "cenospheres", pct: 3.25, sg: 0.90, crush: 2000 },
+      { id: "silica_fume", pct: 12.5, sg: 2.20, crush: 9500 },
+      { id: "fly_ash_f", pct: 7.5, sg: 2.45, crush: 5000 },
+      { id: "3m_k20", pct: 5.0, sg: 0.20, crush: 500 },
+      { id: "cenospheres_std", pct: 3.25, sg: 0.85, crush: 2000 },
       { id: "poraver_05_1", pct: 11.7, sg: 0.50, crush: 300 },
       { id: "poraver_2_4", pct: 6.3, sg: 0.32, crush: 230 },
       { id: "forta_ferro", pct: 0.10, sg: 0.91, crush: 15000 },
       { id: "ar_glass_fibers", pct: 0.25, sg: 2.68, crush: 25000 }
     ];
 
-    function renderTable() {
+    // Initial Admixtures State
+    let admixtureRows = [
+      { id: "masterglenium_7500", dose: 8.0, unit: "floz_cwt", sg: 1.08, solids: 40.0 },
+      { id: "masterair_ae_90", dose: 0.8, unit: "floz_cwt", sg: 1.01, solids: 12.0 },
+      { id: "forton_vf_774", dose: 5.0, unit: "pct_cwt", sg: 1.06, solids: 51.0 }
+    ];
+
+    function resetDefaults() {
+      location.reload();
+    }
+
+    // Helper: Build Grouped Dropdown for Dry Materials
+    function buildDrySelectHTML(selectedId) {
+      let html = '';
+      for (const [catKey, catLabel] of Object.entries(DRY_CATEGORIES)) {
+        html += `<optgroup label="${catLabel}">`;
+        for (const [key, item] of Object.entries(DB)) {
+          if (item.category === catKey) {
+            let sel = key === selectedId ? 'selected' : '';
+            html += `<option value="${key}" ${sel}>${item.name}</option>`;
+          }
+        }
+        html += `</optgroup>`;
+      }
+      return html;
+    }
+
+    // Helper: Build Grouped Dropdown for Admixtures
+    function buildAdmSelectHTML(selectedId) {
+      let html = '';
+      for (const [catKey, catLabel] of Object.entries(ADM_CATEGORIES)) {
+        html += `<optgroup label="${catLabel}">`;
+        for (const [key, item] of Object.entries(ADM_DB)) {
+          if (item.category === catKey) {
+            let sel = key === selectedId ? 'selected' : '';
+            html += `<option value="${key}" ${sel}>${item.name}</option>`;
+          }
+        }
+        html += `</optgroup>`;
+      }
+      return html;
+    }
+
+    function renderDryTable() {
       const tbody = document.getElementById("dry_table_body");
       tbody.innerHTML = "";
       let totPct = 0;
@@ -177,24 +371,24 @@
       dryBlendRows.forEach((row, idx) => {
         totPct += parseFloat(row.pct || 0);
         const tr = document.createElement("tr");
-        tr.className = "py-1 border-b border-slate-700/30";
+        tr.className = "py-1 border-b border-slate-700/30 hover:bg-slate-800/50";
         tr.innerHTML = `
           <td class="py-1.5 pr-2">
-            <select onchange="updateRowMat(${idx}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-sky-500 outline-none">
-              ${Object.keys(DB).map(k => `<option value="${k}" ${k === row.id ? 'selected' : ''}>${DB[k].name}</option>`).join('')}
+            <select onchange="updateDryMat(${idx}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs focus:border-sky-500 outline-none">
+              ${buildDrySelectHTML(row.id)}
             </select>
           </td>
           <td class="py-1.5 pr-2">
-            <input type="number" step="0.01" value="${row.pct}" oninput="updateRowVal(${idx}, 'pct', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sky-300 font-semibold focus:border-sky-500 outline-none">
+            <input type="number" step="0.01" value="${row.pct}" oninput="updateDryVal(${idx}, 'pct', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sky-300 font-semibold focus:border-sky-500 outline-none">
           </td>
           <td class="py-1.5 pr-2">
-            <input type="number" step="0.01" value="${row.sg}" oninput="updateRowVal(${idx}, 'sg', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-sky-500 outline-none">
+            <input type="number" step="0.01" value="${row.sg}" oninput="updateDryVal(${idx}, 'sg', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-sky-500 outline-none">
           </td>
           <td class="py-1.5 pr-2">
-            <input type="number" step="10" value="${row.crush}" oninput="updateRowVal(${idx}, 'crush', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-sky-500 outline-none">
+            <input type="number" step="10" value="${row.crush}" oninput="updateDryVal(${idx}, 'crush', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-sky-500 outline-none">
           </td>
           <td class="py-1.5 text-center">
-            <button onclick="removeRow(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
+            <button onclick="removeDryRow(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -204,39 +398,102 @@
       calculate();
     }
 
-    function updateRowMat(idx, matId) {
+    function renderAdmTable() {
+      const tbody = document.getElementById("adm_table_body");
+      tbody.innerHTML = "";
+
+      admixtureRows.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+        tr.className = "py-1 border-b border-slate-700/30 hover:bg-slate-800/50";
+        tr.innerHTML = `
+          <td class="py-1.5 pr-2">
+            <select onchange="updateAdmMat(${idx}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs focus:border-emerald-500 outline-none">
+              ${buildAdmSelectHTML(row.id)}
+            </select>
+          </td>
+          <td class="py-1.5 pr-2">
+            <input type="number" step="0.1" value="${row.dose}" oninput="updateAdmVal(${idx}, 'dose', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-emerald-300 font-semibold focus:border-emerald-500 outline-none">
+          </td>
+          <td class="py-1.5 pr-2">
+            <select onchange="updateAdmVal(${idx}, 'unit', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-slate-300 outline-none">
+              <option value="floz_cwt" ${row.unit === 'floz_cwt' ? 'selected' : ''}>fl oz / cwt</option>
+              <option value="pct_cwt" ${row.unit === 'pct_cwt' ? 'selected' : ''}>% cwt</option>
+            </select>
+          </td>
+          <td class="py-1.5 pr-2">
+            <input type="number" step="0.01" value="${row.sg}" oninput="updateAdmVal(${idx}, 'sg', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-emerald-500 outline-none">
+          </td>
+          <td class="py-1.5 pr-2">
+            <input type="number" step="0.1" value="${row.solids}" oninput="updateAdmVal(${idx}, 'solids', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 focus:border-emerald-500 outline-none">
+          </td>
+          <td class="py-1.5 text-center">
+            <button onclick="removeAdmRow(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      calculate();
+    }
+
+    function updateDryMat(idx, matId) {
       dryBlendRows[idx].id = matId;
       dryBlendRows[idx].sg = DB[matId].sg;
       dryBlendRows[idx].crush = DB[matId].crush;
-      renderTable();
+      renderDryTable();
     }
 
-    function updateRowVal(idx, key, val) {
+    function updateDryVal(idx, key, val) {
       dryBlendRows[idx][key] = parseFloat(val) || 0;
       calculate();
     }
 
     function addDryRow() {
       dryBlendRows.push({ id: "3m_k37", pct: 1.0, sg: 0.37, crush: 3000 });
-      renderTable();
+      renderDryTable();
     }
 
-    function removeRow(idx) {
+    function removeDryRow(idx) {
       dryBlendRows.splice(idx, 1);
-      renderTable();
+      renderDryTable();
+    }
+
+    function updateAdmMat(idx, matId) {
+      let info = ADM_DB[matId];
+      admixtureRows[idx].id = matId;
+      admixtureRows[idx].sg = info.sg;
+      admixtureRows[idx].solids = info.solids;
+      admixtureRows[idx].unit = info.default_unit;
+      admixtureRows[idx].dose = info.default_dose;
+      renderAdmTable();
+    }
+
+    function updateAdmVal(idx, key, val) {
+      admixtureRows[idx][key] = key === 'unit' ? val : (parseFloat(val) || 0);
+      calculate();
+    }
+
+    function addAdmixtureRow() {
+      admixtureRows.push({ id: "masterglenium_7500", dose: 4.0, unit: "floz_cwt", sg: 1.08, solids: 40.0 });
+      renderAdmTable();
+    }
+
+    function removeAdmRow(idx) {
+      admixtureRows.splice(idx, 1);
+      renderAdmTable();
     }
 
     function calculate() {
-      const w_cm = parseFloat(document.getElementById("w_cm").value) || 0.25;
-      const air_pct = parseFloat(document.getElementById("air_pct").value) || 0.0;
-      const bw_factor = parseFloat(document.getElementById("bw_factor").value) || 0.24;
-      const cal_factor = parseFloat(document.getElementById("cal_factor").value) || 1.0;
+      const w_cm = parseFloat(document.getElementById("w_cm").value) || 0.26;
+      const base_air_pct = parseFloat(document.getElementById("base_air_pct").value) || 2.5;
+      const bw_factor = parseFloat(document.getElementById("bw_factor").value) || 0.23;
+      const cal_factor = parseFloat(document.getElementById("cal_factor").value) || 0.52;
 
-      const WATER_DENSITY = 62.427;
-      let tot_pct = dryBlendRows.reduce((a, b) => a + (parseFloat(b.pct) || 0), 0);
-      if (tot_pct === 0) return;
+      const WATER_DENSITY = 62.427; // lb/ft3
+      let tot_dry_pct = dryBlendRows.reduce((a, b) => a + (parseFloat(b.pct) || 0), 0);
+      if (tot_dry_pct === 0) return;
 
-      // Volumetric breakdown
+      // 1. Calculate CM Weight and Dry Volumes per 100 lbs dry batch
       let dry_vols = [];
       let cm_wt = 0;
       let k_cm_num = 0;
@@ -244,8 +501,8 @@
       let agg_strength_weighted = 0;
 
       dryBlendRows.forEach(r => {
-        let normalized_pct = (r.pct / tot_pct) * 100.0;
-        let info = DB[r.id] || { is_cm: false, efficiency: 1.0, d50: 100 };
+        let normalized_pct = (r.pct / tot_dry_pct) * 100.0;
+        let info = DB[r.id] || { is_cm: false, efficiency: 1.0 };
         let vol = normalized_pct / (r.sg * WATER_DENSITY);
         dry_vols.push(vol);
 
@@ -253,7 +510,6 @@
           cm_wt += normalized_pct;
           k_cm_num += normalized_pct * info.efficiency;
         } else {
-          // Micro-aggregate strength contribution
           let eff_crush = Math.min(1.0, Math.pow(r.crush / 4000.0, 0.35));
           agg_strength_weighted += vol * eff_crush;
           total_agg_vol += vol;
@@ -261,48 +517,107 @@
       });
 
       let tot_dry_vol = dry_vols.reduce((a, b) => a + b, 0);
-      let target_water_wt = cm_wt * w_cm;
-      let water_vol = target_water_wt / WATER_DENSITY;
 
-      // Fixed liquid admixture defaults
-      let adm_wt = 0.520;
-      let adm_solids = 0.155;
-      let adm_vol = 0.0081;
+      // 2. Process Admixture Dosages relative to CM Weight (cwt)
+      let adm_liquid_wt = 0;
+      let adm_solid_wt = 0;
+      let adm_vol = 0;
+      let aea_air_increase = 0;
+      let pce_dosage_factor = 0;
+      let polymer_solid_wt = 0;
 
+      let cm_cwt = cm_wt / 100.0;
+
+      admixtureRows.forEach(adm => {
+        let info = ADM_DB[adm.id] || { type: "generic" };
+        let dose = adm.dose;
+        let total_adm_wt = 0;
+
+        if (adm.unit === "floz_cwt") {
+          let total_floz = dose * cm_cwt;
+          let gallons = total_floz / 128.0;
+          let vol_ft3 = gallons / 7.48052;
+          total_adm_wt = vol_ft3 * (adm.sg * WATER_DENSITY);
+        } else {
+          total_adm_wt = (dose / 100.0) * cm_wt;
+        }
+
+        let solids_fraction = adm.solids / 100.0;
+        let solids_wt = total_adm_wt * solids_fraction;
+        let liquid_water_wt = total_adm_wt - solids_wt;
+
+        adm_solid_wt += solids_wt;
+        adm_liquid_wt += liquid_water_wt;
+
+        let adm_sg = adm.sg > 0 ? adm.sg : 1.0;
+        adm_vol += total_adm_wt / (adm_sg * WATER_DENSITY);
+
+        // Admixture specific behavioral factors
+        if (info.type === "air_entrainer") {
+          let effective_dose = adm.unit === "floz_cwt" ? dose : (dose * 10);
+          aea_air_increase += effective_dose * 3.5;
+        } else if (info.type === "superplasticizer") {
+          let effective_dose = adm.unit === "floz_cwt" ? dose : (dose * 2);
+          pce_dosage_factor += effective_dose;
+        } else if (info.type === "polymer") {
+          polymer_solid_wt += solids_wt;
+        }
+      });
+
+      // Water calculation
+      let added_batch_water_wt = cm_wt * w_cm;
+      let net_water_wt = added_batch_water_wt + adm_liquid_wt;
+      let net_w_cm = cm_wt > 0 ? (net_water_wt / cm_wt) : w_cm;
+
+      let water_vol = added_batch_water_wt / WATER_DENSITY;
+
+      // Air Content Total
+      let total_air_pct = Math.min(45.0, base_air_pct + aea_air_increase);
+
+      // Volume & Density Balancing
       let tot_solid_vol = tot_dry_vol + water_vol + adm_vol;
-      let unit_batch_vol = tot_solid_vol / (1.0 - (air_pct / 100.0));
+      let unit_batch_vol = tot_solid_vol / (1.0 - (total_air_pct / 100.0));
       let scale = 1.0 / unit_batch_vol;
 
-      let wet_density = (100.0 + target_water_wt + adm_wt) * scale;
-      let cured_dry_density = (100.0 + (cm_wt * bw_factor) + adm_solids) * scale;
-      let oven_dry_density = (100.0 + adm_solids) * scale;
+      let wet_density = (100.0 + added_batch_water_wt + (adm_solid_wt + adm_liquid_wt)) * scale;
+      let cured_dry_density = (100.0 + (cm_wt * bw_factor) + adm_solid_wt) * scale;
+      let oven_dry_density = (100.0 + adm_solid_wt) * scale;
 
-      // Strength factors
-      let base_strength = 16000.0 / Math.pow(6.5, w_cm);
+      // 3. Multi-factor Compressive Strength Model
+      let base_strength = 16000.0 / Math.pow(6.5, net_w_cm);
       let k_cm = cm_wt > 0 ? (k_cm_num / cm_wt) : 1.0;
-      let k_density = Math.pow(cured_dry_density / 145.0, 0.82);
-      let k_air = Math.exp(-2.5 * (air_pct / 100.0));
-      let k_polymer = 1.0 + (0.50 * ((adm_solids * scale) / (cm_wt * scale)));
+      let k_density = Math.pow(Math.max(10.0, cured_dry_density) / 145.0, 0.82);
+      let k_air = Math.exp(-0.05 * total_air_pct);
       
-      // Composite aggregate strength modifier (K_agg)
+      let polymer_ratio = cm_wt > 0 ? (polymer_solid_wt / cm_wt) : 0;
+      let k_polymer = 1.0 + (0.45 * polymer_ratio);
+      
+      let k_dispersion = 1.0 + Math.min(0.20, pce_dosage_factor * 0.025);
+
       let paste_vol = tot_solid_vol - total_agg_vol;
       let k_agg = tot_solid_vol > 0 ? ((agg_strength_weighted + paste_vol) / tot_solid_vol) : 1.0;
 
-      let predicted_psi = base_strength * k_cm * k_density * k_air * k_polymer * k_agg * cal_factor;
+      let predicted_psi = base_strength * k_cm * k_density * k_air * k_polymer * k_dispersion * k_agg * cal_factor;
+      let predicted_mpa = predicted_psi * 0.00689476;
 
       // Update UI Outputs
-      document.getElementById("out_oven_density").innerText = oven_dry_density.toFixed(1);
-      document.getElementById("out_cured_density").innerText = cured_dry_density.toFixed(1);
       document.getElementById("out_wet_density").innerText = wet_density.toFixed(1);
+      document.getElementById("out_cured_density").innerText = cured_dry_density.toFixed(1);
+      document.getElementById("out_oven_density").innerText = oven_dry_density.toFixed(1);
       document.getElementById("out_psi").innerText = Math.round(predicted_psi).toLocaleString();
+      document.getElementById("out_mpa").innerText = predicted_mpa.toFixed(2) + " MPa";
 
+      document.getElementById("out_tot_air").innerText = total_air_pct.toFixed(1) + "%";
+      document.getElementById("out_net_wcm").innerText = net_w_cm.toFixed(3);
       document.getElementById("out_k_agg").innerText = k_agg.toFixed(3);
       document.getElementById("out_k_air").innerText = k_air.toFixed(3);
-      document.getElementById("out_k_density").innerText = k_density.toFixed(3);
+      document.getElementById("out_k_poly").innerText = k_polymer.toFixed(3);
+      document.getElementById("out_k_disp").innerText = k_dispersion.toFixed(3);
     }
 
     // Initialize UI on load
-    renderTable();
+    renderDryTable();
+    renderAdmTable();
   </script>
 </body>
 </html>
