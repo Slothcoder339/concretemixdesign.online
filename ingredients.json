@@ -1,0 +1,25 @@
+{
+  "w_cm": 0.25,
+  "air_pct": 12.0,
+  "bound_water_factor": 0.24,
+  "strength_calibration_factor": 0.511,
+  "dry_blend": [
+    { "id": "type_il_cement", "pct": 24.0 },
+    { "id": "cts_komponent", "pct": 4.5 },
+    { "id": "ggbfs_slag", "pct": 15.0 },
+    { "id": "metakaolin", "pct": 10.0 },
+    { "id": "silica_fume", "pct": 12.5 },
+    { "id": "fly_ash_f", "pct": 7.5 },
+    { "id": "glass_bubbles_k20", "pct": 5.0 },
+    { "id": "cenospheres", "pct": 3.25 },
+    { "id": "poraver_05_1", "pct": 11.7 },
+    { "id": "poraver_2_4", "pct": 6.3 },
+    { "id": "forta_ferro", "pct": 0.10 },
+    { "id": "ar_glass_fibers", "pct": 0.25 }
+  ],
+  "admixtures": [
+    { "id": "air_entrainer", "dose_cwt": 5.0 },
+    { "id": "superplasticizer", "dose_cwt": 3.5 },
+    { "id": "acrylic_fortifier", "dose_cwt": 2.0 }
+  ]
+}
